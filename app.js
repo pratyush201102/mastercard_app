@@ -65,7 +65,7 @@ function tractDisplayName(row) {
   const tract = row.Tract ?? "unknown";
   const score = toNumber(row["Health Insurance Coverage Score"]);
   const insured = safePct(row["Health Insurance Coverage Tract, %"]);
-  return `Tract ${tract} | Score ${score ?? "-"} | Insured ${insured ?? "-"}%`;
+  return `Tract ${tract} | Health Insurance Coverage Score ${score ?? "-"} | Insured ${insured ?? "-"}%`;
 }
 
 function getRowByTract(tract) {
