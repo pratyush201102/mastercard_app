@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stage 6 What-If Simulator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  </head>
+  <body>
+    <div class="bg-orb bg-orb-a"></div>
+    <div class="bg-orb bg-orb-b"></div>
+
+    <main class="app-shell">
+      <header class="hero">
+        <p class="eyebrow">Health Access Model</p>
+        <h1>What-If Simulation: Health Insurance Impact</h1>
+        <p class="subtitle">
+          Improve a tract's top negative SHAP factors by achievable percentile points
+          and estimate resulting insurance coverage gains in people.
+        </p>
+      </header>
+
+      <section class="panel controls">
+        <div class="row">
+          <label for="tractSelect">Select tract</label>
+          <select id="tractSelect"></select>
+        </div>
+
+        <div class="row row-two">
+          <div>
+            <label for="populationInput">Population</label>
+            <input id="populationInput" type="number" min="1" step="1" value="1617" />
+          </div>
+          <div>
+            <label for="yearsInput">Intervention timeline (years)</label>
+            <input id="yearsInput" type="number" min="1" step="1" value="3" />
+          </div>
+        </div>
+
+        <div id="factorSliders" class="slider-grid"></div>
+
+        <div class="button-row">
+          <button id="resetBtn" type="button">Reset to 10 pts each</button>
+          <label class="file-label" for="fileInput">Load another CSV</label>
+          <input id="fileInput" type="file" accept=".csv" />
+        </div>
+
+        <p id="status" class="status"></p>
+      </section>
+
+      <section class="panel outputs">
+        <h2>Impact Summary</h2>
+        <div class="metrics">
+          <div class="metric-card">
+            <p class="metric-label">Current insured %</p>
+            <p id="currentPct" class="metric-value">-</p>
+          </div>
+          <div class="metric-card">
+            <p class="metric-label">Estimated score lift</p>
+            <p id="scoreLift" class="metric-value accent">-</p>
+          </div>
+          <div class="metric-card">
+            <p class="metric-label">Projected insured %</p>
+            <p id="projectedPct" class="metric-value">-</p>
+          </div>
+          <div class="metric-card">
+            <p class="metric-label">Additional insured residents</p>
+            <p id="peopleLift" class="metric-value highlight">-</p>
+          </div>
+        </div>
+
+        <div class="formula">
+          <h3>Calculation assumptions</h3>
+          <ul>
+            <li>
+              SHAP recovery per factor is proportional to slider amount: recovery =
+              abs(negative SHAP) x (improvement pts / 15).
+            </li>
+            <li>
+              Estimated score lift = sum of factor recoveries for the selected tract's
+              top negative SHAP factors.
+            </li>
+            <li>
+              1-point score lift is translated as roughly +1 percentage point in
+              insurance coverage (bounded to 0-100%).
+            </li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
