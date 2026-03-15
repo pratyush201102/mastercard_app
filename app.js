@@ -11,20 +11,13 @@ const state = {
 
 const tractSelect = document.getElementById("tractSelect");
 const populationInput = document.getElementById("populationInput");
-const yearsInput = document.getElementById("yearsInput");
 const factorSliders = document.getElementById("factorSliders");
-const fileInput = document.getElementById("fileInput");
 const resetBtn = document.getElementById("resetBtn");
-const statusEl = document.getElementById("status");
 
 const currentPctEl = document.getElementById("currentPct");
 const scoreLiftEl = document.getElementById("scoreLift");
 const projectedPctEl = document.getElementById("projectedPct");
 const peopleLiftEl = document.getElementById("peopleLift");
-
-function setStatus(message) {
-  statusEl.textContent = message;
-}
 
 function toNumber(value) {
   const num = Number(value);
@@ -132,7 +125,6 @@ function renderFactorSliders() {
 
   const factors = getTopNegativeFactors(row, 3);
   if (!factors.length) {
-    setStatus("No negative SHAP factors were found for this tract.");
     return;
   }
 
@@ -208,8 +200,6 @@ function renderFactorSliders() {
 
     factorSliders.appendChild(card);
   });
-
-  setStatus(`Loaded top ${factors.length} negative SHAP factors for Tract ${row.Tract}.`);
 }
 
 function calculateAndRenderImpact() {
@@ -240,11 +230,6 @@ function calculateAndRenderImpact() {
   scoreLiftEl.textContent = `+${scoreLift.toFixed(2)} points`;
   projectedPctEl.textContent = `${projectedPct.toFixed(1)}% (+${pctPointGain.toFixed(1)} pts)`;
   peopleLiftEl.textContent = `${additionalPeople.toLocaleString()} people`;
-
-  const years = Number(yearsInput.value) || 3;
-  setStatus(
-    `Estimated achievable in ${years} year${years === 1 ? "" : "s"}: about ${additionalPeople.toLocaleString()} additional insured residents.`
-  );
 }
 
 function loadRows(rows) {
@@ -277,23 +262,10 @@ function parseCsvText(csvText) {
     throw new Error("CSV parse error: no usable rows were found.");
   }
 
-  if (result.errors?.length) {
-    const parseWarnings = result.errors
-      .filter((error) => error && error.message)
-      .slice(0, 1)
-      .map((error) => error.message)
-      .join(" ");
-
-    setStatus(
-      `Loaded with parser warnings. ${parseWarnings || "Some malformed rows were skipped."}`
-    );
-  }
-
   return parsedRows;
 }
 
 async function loadDefaultCsv() {
-  setStatus("Loading default CSV...");
   const res = await fetch(DEFAULT_CSV);
   if (!res.ok) {
     throw new Error(`Could not load ${DEFAULT_CSV}. Use the file picker.`);
@@ -304,7 +276,6 @@ async function loadDefaultCsv() {
 }
 
 async function loadRowsFromApi() {
-  setStatus("Loading tract data from backend...");
   const res = await fetch(API_ENDPOINT);
   if (!res.ok) {
     throw new Error(`Backend returned ${res.status}`);
@@ -326,7 +297,6 @@ tractSelect.addEventListener("change", (event) => {
 });
 
 populationInput.addEventListener("input", calculateAndRenderImpact);
-yearsInput.addEventListener("input", calculateAndRenderImpact);
 
 resetBtn.addEventListener("click", () => {
   const row = getRowByTract(state.selectedTract);
@@ -338,20 +308,6 @@ resetBtn.addEventListener("click", () => {
   calculateAndRenderImpact();
 });
 
-fileInput.addEventListener("change", async (event) => {
-  const file = event.target.files?.[0];
-  if (!file) return;
-
-  try {
-    setStatus(`Loading ${file.name}...`);
-    const text = await file.text();
-    const rows = parseCsvText(text);
-    loadRows(rows);
-  } catch (error) {
-    setStatus(`Could not load file: ${error.message}`);
-  }
-});
-
 (async function init() {
   try {
     await loadRowsFromApi();
@@ -359,9 +315,7 @@ fileInput.addEventListener("change", async (event) => {
     try {
       await loadDefaultCsv();
     } catch (fallbackError) {
-      setStatus(
-        `${error.message}. Fallback also failed: ${fallbackError.message}. Select a CSV using \"Load another CSV\".`
-      );
+      console.error(`${error.message}. Fallback also failed: ${fallbackError.message}.`);
     }
   }
 })();

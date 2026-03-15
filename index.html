@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Stage 6 What-If Simulator</title>
+    <title>Health Access Model</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -33,14 +33,10 @@
           <select id="tractSelect"></select>
         </div>
 
-        <div class="row row-two">
+        <div class="row">
           <div>
             <label for="populationInput">Population</label>
             <input id="populationInput" type="number" min="1" step="1" value="1617" />
-          </div>
-          <div>
-            <label for="yearsInput">Intervention timeline (years)</label>
-            <input id="yearsInput" type="number" min="1" step="1" value="3" />
           </div>
         </div>
 
@@ -48,11 +44,8 @@
 
         <div class="button-row">
           <button id="resetBtn" type="button">Reset to 10 pts each</button>
-          <label class="file-label" for="fileInput">Load another CSV</label>
-          <input id="fileInput" type="file" accept=".csv" />
         </div>
 
-        <p id="status" class="status"></p>
       </section>
 
       <section class="panel outputs">
@@ -89,7 +82,7 @@
             </li>
             <li>
               1-point score lift is translated as roughly +1 percentage point in
-              insurance coverage (bounded to 0-100%).
+              insurance coverage.
             </li>
           </ul>
         </div>
